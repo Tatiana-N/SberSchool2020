@@ -3,9 +3,17 @@ package org.nta.lessons.lesson2;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FileAnalize {
-  public static void differentWords(List<String> list) {
-    Map<String, Integer> differentWords = new HashMap<>();
+public class FileAnalysis {
+  private  Map<String, Integer> differentWords;
+  private List<String> linesOfFile;
+
+  public FileAnalysis(List<String> linesOfFile) {
+    this.linesOfFile = linesOfFile;
+    differentWords(linesOfFile);
+  }
+
+  public void differentWords(List<String> list) {
+  differentWords = new HashMap<>();
     Iterator<String> iterator = list.iterator();
     while (iterator.hasNext()) {
       String line = iterator.next();
@@ -18,20 +26,26 @@ public class FileAnalize {
         }
       }
     }
+  }
+  public void getNumberOfUniqueWords(){
     System.out.println("Задание 1: Подсчитайте количество различных слов в файле.");
     System.out.println("Количество уникальных слов = " + differentWords.size());
+  }
+  public void getOrderedByLengthWords(){
     System.out.println("Задание 2: Выведите на экран список различных слов файла, отсортированный по возрастанию их длины (компаратор сначала по длине слова, потом по тексту).");
     differentWords.keySet().stream().sorted(Comparator.comparing(String::length)).forEach(System.out::println);
+  }
+  public void getNumberOfEachWord(){
     System.out.println("Задание 3: Подсчитайте и выведите на экран сколько раз каждое слово встречается в файле.");
     differentWords.forEach((key, value) -> System.out.println(String.format("%15s %2s", key, value)));
+  }
+  public void getReversedOderLines(){
     System.out.println("Задание 4: Выведите на экран все строки файла в обратном порядке.");
-    List<String> copyList = new ArrayList<>(list);
-    Collections.reverse(copyList);
-    copyList.iterator().forEachRemaining(System.out::println);
+    this.reversedIterator().forEachRemaining(System.out::println);
   }
 
-  public static Iterator<String> reversedIterator(List<String> list) {
-    List<String> copyList = new ArrayList<>(list);
+  public Iterator<String> reversedIterator() {
+    List<String> copyList = new ArrayList<>(linesOfFile);
     Collections.reverse(copyList);
     System.out.println("Задание 5: Реализуйте свой Iterator для обхода списка в обратном порядке.");
     return copyList.iterator();
