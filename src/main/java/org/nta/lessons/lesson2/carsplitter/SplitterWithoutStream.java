@@ -3,7 +3,7 @@ package org.nta.lessons.lesson2.carsplitter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Splitter {
+public class SplitterWithoutStream {
   public Map<String, List<Car>> split(List<Car> list) {
 
     Set<String> types = new HashSet<>();
