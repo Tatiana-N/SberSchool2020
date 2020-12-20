@@ -10,7 +10,7 @@ public class CountMapClass<T> implements CountMap<T> {
   }
 
   public CountMapClass() {
-    this.list = new ArrayList<T>();
+    this.list = new ArrayList<>();
   }
   public CountMapClass(List<T> list) {
     this.list = list;
@@ -73,6 +73,10 @@ public class CountMapClass<T> implements CountMap<T> {
       }
     }
     return map;
+  }
+
+  public List<T> toList() {
+    return list;
   }
 
   @Override
