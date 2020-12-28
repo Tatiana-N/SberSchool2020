@@ -3,12 +3,13 @@ package org.nta.lessons.lesson3.hw;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CountMapWithMap<T> implements CountMap<T>{
-  private final Map<T,Integer> map;
+public class CountMapWithMap<T> implements CountMap<T> {
+  private final Map<T, Integer> map;
 
   public CountMapWithMap(Map<T, Integer> map) {
     this.map = map;
   }
+
   public CountMapWithMap() {
     this.map = new LinkedHashMap<>();
   }
@@ -39,7 +40,7 @@ public class CountMapWithMap<T> implements CountMap<T>{
 
   @Override
   public void addAll(CountMap<T> source) {
-  map.putAll(source.toMap());
+    map.putAll(source.toMap());
   }
 
   @Override
@@ -49,7 +50,7 @@ public class CountMapWithMap<T> implements CountMap<T>{
 
   @Override
   public void toMap(Map<T, Integer> destination) {
-  destination.putAll(map);
+    destination.putAll(map);
   }
 
   public List<T> toList() {

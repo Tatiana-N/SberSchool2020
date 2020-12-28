@@ -58,8 +58,8 @@ public class CollectionUtils {
   //Возвращает лист, содержащий элементы из входного листа в диапазоне от min до max.
 // Элементы сравнивать через Comparable.
 // Прмер range(Arrays.asList(8,1,3,5,6, 4), 3, 6) вернет {3,4,5,6}
-  public static <T extends Comparable<? super T>> List<? super T> range(List<? extends T> list, T min, T max) {
-    List<? super T> rangedList = newArrayList();
+  public static <T extends Comparable<? super T>> List< T> range(List< T> list, T min, T max) {
+    List<T> rangedList = newArrayList();
     for (T t : list) {
       if (t.compareTo(min) >= 0 && t.compareTo(max) <= 0) {
         rangedList.add(t);
@@ -71,8 +71,8 @@ public class CollectionUtils {
   //Возвращает лист, содержащий элементы из входного листа в диапазоне от min до max.
 // Элементы сравнивать через Comparable.
 // Прмер range(Arrays.asList(8,1,3,5,6, 4), 3, 6) вернет {3,4,5,6}
-  public static <T extends Comparable<? super T>> List<? super T> range(List<? extends T> list, T min, T max, Comparator<T> comparator) {
-    List<? super T> rangedList = newArrayList();
+  public static <T extends Comparable<? super T>> List<T> range(List< T> list, T min, T max, Comparator<T> comparator) {
+    List< T> rangedList = newArrayList();
     for (T t : list) {
       if (comparator.compare(t, min) >= 0 && comparator.compare(t, max) <= 0) {
         rangedList.add(t);

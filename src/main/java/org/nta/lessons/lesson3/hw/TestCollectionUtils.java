@@ -74,11 +74,6 @@ public class TestCollectionUtils {
   public void rangeWithComparator() {
     System.out.println(CollectionUtils.range(listInteger,
       2,
-      5, new Comparator<Integer>() {
-        @Override
-        public int compare(Integer o1, Integer o2) {
-          return o1 - o2;
-        }
-      }));
+      5, Comparator.comparingInt(o -> o)));
   }
 }
