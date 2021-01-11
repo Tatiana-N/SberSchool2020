@@ -1,15 +1,15 @@
 package org.nta.lessons.lesson6;
 
-public class MyClass {
+public class MyClass1 {
   private String SecondName = "Новиков";
   private int id;
   public int getAge() {
     return id;
   }
-  public void setAge(Number age) {
-    this.id = (int)age;
+  public void setAge(int age) {
+    this.id = age;
   }
-  private void printData(){
+  private void prINTData(){
     System.out.println(id + SecondName);
   }
 }
