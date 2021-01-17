@@ -12,9 +12,10 @@ import static org.junit.Assert.assertEquals;
 
 
 public class JunitTest {
+  BankAccount bankAccount1 = new BankAccount("Tom", 3000, 1234);
+
   @Test
   public void getAccount() throws InterruptedException {
-    BankAccount bankAccount1 = new BankAccount("Tom", 3000, 1234);
     String pin = "2\n2\n2\n";
     InputStream is = new ByteArrayInputStream(pin.getBytes());
     System.setIn(is);
@@ -31,8 +32,6 @@ public class JunitTest {
 
   @Test
   public void putMoney() {
-
-    BankAccount bankAccount1 = new BankAccount("Tom", 3000, 1234);
     String pin = "1\n2\n3\n4\n";
     InputStream is = new ByteArrayInputStream(pin.getBytes());
     System.setIn(is);
@@ -43,13 +42,10 @@ public class JunitTest {
     System.out.println("Внесение некорректной суммы");
     terminal.putMoney(99);
     assertEquals(terminal.checkAccount(), 3200.0, 0.0);
-
   }
 
   @Test
   public void getMoney() {
-
-    BankAccount bankAccount1 = new BankAccount("Tom", 3000, 1234);
     String pin = "1\n2\n3\n4\n";
     InputStream is = new ByteArrayInputStream(pin.getBytes());
     System.setIn(is);
@@ -64,6 +60,5 @@ public class JunitTest {
     System.out.println("Снятие суммы превышающей баланс");
     terminal.withdrawMoney(3000);
     assertEquals(terminal.checkAccount(), 2800.0, 0.0);
-
   }
 }

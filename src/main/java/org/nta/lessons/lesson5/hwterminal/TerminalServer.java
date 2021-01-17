@@ -42,6 +42,7 @@ public class TerminalServer {
       initializationOfAccount();//проверка соединения
     }
     if (connectWithAccount && initializationIsOk) {
+      System.out.println("Ваш балланс составляет : ");
       return bankAccount.getBalance();
     }
     return 0;
