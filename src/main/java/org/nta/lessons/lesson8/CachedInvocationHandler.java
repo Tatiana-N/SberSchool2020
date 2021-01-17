@@ -16,7 +16,7 @@ public class CachedInvocationHandler implements InvocationHandler, Serializable 
   }
 
   @Override
-  public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
+  public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
     Map<Object, Object> cacheMap = LoadData.load();
     String annotatedParameters = getAnnotatedParameters(method, args);
     if (!method.isAnnotationPresent(Cache.class)) {
