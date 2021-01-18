@@ -14,12 +14,12 @@ public class CacheAndMetricProxy extends CachedInvocationHandler implements Invo
 
 
   public CacheAndMetricProxy(Object delegate) {
-    super(delegate, 500);
+    super(delegate);
     this.delegate = delegate;
   }
 
   @Override
-  public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+  public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
     if (!method.isAnnotationPresent(Metric.class)) {
       return super.invoke(proxy, method, args);
     }
