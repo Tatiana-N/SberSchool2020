@@ -32,14 +32,14 @@ public class Streams<T> {
   }
 
 
-  public <R> Streams<T> transform(Function<T, R> function) {
+  public <R> Streams<R> transform(Function<T, R> function) {
     List<T> list = stream.collect(Collectors.toList());
-    return (Streams<T>) new Streams<>(list.stream().map(function).collect(Collectors.toList()));
+    return new Streams<>(list.stream().map(function).collect(Collectors.toList()));
   }
 
-  public <R, T> Map<R, T> toMap(Function<T, R> keyFunction, Function<T, T> valueFunction) {
-    List<T> list = (List<T>) stream.collect(Collectors.toList());
+  public <R> Map<R, T> toMap(Function<T, R> keyFunction, Function<T, T> valueFunction) {
+    List<T> list = stream.collect(Collectors.toList());
 
-    return list.stream().collect(Collectors.toMap(keyFunction::apply, valueFunction::apply));
+    return list.stream().collect(Collectors.toMap(keyFunction, valueFunction));
   }
 }

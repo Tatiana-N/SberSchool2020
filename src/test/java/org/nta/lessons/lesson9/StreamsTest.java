@@ -21,6 +21,7 @@ public class StreamsTest {
     people.add(new Person(25, "Alice"));
     people.add(new Person(31, "Kate"));
   }
+
   @Test
   public void of() {
     getList();
@@ -29,6 +30,7 @@ public class StreamsTest {
     Assert.assertArrayEquals(list.toArray(), people.toArray());
     Assert.assertArrayEquals(listImmutable.toArray(), people.toArray());
   }
+
   @Test
   public void filter() {
     getList();
@@ -43,16 +45,18 @@ public class StreamsTest {
   public void transform() {
     getList();
     final List<Person> listImmutable = new ArrayList<>(people); // для проверки, что исходный лист не меняется
-    List<Person> list = Streams.of(people)
+    //   Streams.of(people).transform(p ->  p.getName()).toList().forEach(System.out::println);
+    List<Person> list = Streams.of(this.people)
       .transform(p -> new Person(p.getAge() + 30, p.getName())).toList();
-    Assert.assertArrayEquals(list.toArray(), people.stream().map(p -> new Person(p.getAge() + 30, p.getName())).toArray());
-    Assert.assertArrayEquals(listImmutable.toArray(), people.toArray());
+    Assert.assertArrayEquals(list.toArray(), this.people.stream().map(p -> new Person(p.getAge() + 30, p.getName())).toArray());
+    Assert.assertArrayEquals(listImmutable.toArray(), this.people.toArray());
   }
+
   @Test
   public void toMap() {
     getList();
     final List<Person> listImmutable = new ArrayList<>(people); // для проверки, что исходный лист не меняется
-    Map<String, Person> map =  Streams.of(people).toMap( Person::getName, person -> person);
+    Map<String, Person> map = Streams.of(people).toMap(Person::getName, person -> person);
     Assert.assertArrayEquals(map.entrySet().toArray(), people.stream().collect(Collectors.toMap(Person::getName, p -> p)).entrySet().toArray());
     Assert.assertArrayEquals(listImmutable.toArray(), people.toArray());
   }
