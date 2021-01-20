@@ -1,5 +1,6 @@
 package org.nta.lessons.lesson9;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -8,38 +9,30 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Streams<T> {
-  private Stream<T> stream;
+    private final Stream<T> stream;
 
-  public void setStream(Stream<T> stream) {
-    this.stream = stream;
-  }
+    public Streams(Stream<T> stream) {
+        this.stream = stream;
+    }
 
-  public Streams(List<T> list) {
-    setStream(list.stream());
-  }
+    public static <T> Streams<T> of(Collection<T> collection) {
+        return new Streams<>(collection.stream());
+    }
 
-  public static <T> Streams<T> of(List<T> list) {
-    return new Streams<>(list);
-  }
+    public Streams<T> filter(Predicate<? super T> predicate) {
+        return new Streams<>(stream.filter(predicate));
+    }
 
-  public Streams<T> filter(Predicate<T> predicate) {
-    List<T> list = stream.collect(Collectors.toList());
-    return new Streams<>(list.stream().filter(predicate).collect(Collectors.toList()));
-  }
-
-  public List<T> toList() {
-    return stream.collect(Collectors.toList());
-  }
+    public List<T> toList() {
+        return stream.collect(Collectors.toList());
+    }
 
 
-  public <R> Streams<R> transform(Function<T, R> function) {
-    List<T> list = stream.collect(Collectors.toList());
-    return new Streams<>(list.stream().map(function).collect(Collectors.toList()));
-  }
+    public <R> Streams<R> transform(Function<? super T, ? extends R> function) {
+        return new Streams<>(stream.map(function));
+    }
 
-  public <R> Map<R, T> toMap(Function<T, R> keyFunction, Function<T, T> valueFunction) {
-    List<T> list = stream.collect(Collectors.toList());
-
-    return list.stream().collect(Collectors.toMap(keyFunction, valueFunction));
-  }
+    public <R, V> Map<R, V> toMap(Function<? super T, ? extends R> keyFunction, Function<? super T, ? extends V> valueFunction) {
+        return stream.collect(Collectors.toMap(keyFunction, valueFunction));
+    }
 }
