@@ -19,7 +19,7 @@ public class RunF implements Runnable {
 //    } catch (InterruptedException e) {
 //      e.printStackTrace();
 //    }
-    System.out.println(Thread.currentThread().getName() + ": " + calc.countFactorial(BigDecimal.valueOf(a)));
+    System.out.println(Thread.currentThread().getName() + ": factorial "+ a + " = " + calc.countFactorial(BigDecimal.valueOf(a)));
   }
 
 
