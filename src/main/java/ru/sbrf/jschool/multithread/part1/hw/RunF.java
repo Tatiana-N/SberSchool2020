@@ -5,10 +5,11 @@ import org.nta.lessons.lesson6.calc.CalculatorImpl;
 import org.nta.lessons.lesson6.metric.Metric;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 public class RunF implements Runnable {
   Integer num;
-
 
 
   public void countFactorial(int a) {
