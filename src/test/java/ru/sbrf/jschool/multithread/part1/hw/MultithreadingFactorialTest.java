@@ -2,7 +2,7 @@ package ru.sbrf.jschool.multithread.part1.hw;
 
 
 import org.junit.Test;
-import ru.sbrf.jschool.multithread.part2.hw.MyPoolFixedTreads;
+import ru.sbrf.jschool.multithread.part2.hw.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,11 +12,9 @@ public class MultithreadingFactorialTest {
   static List<Integer> list2 = new ArrayList<>();
 
   static {
-    list.add(1);
-    list.add(10);
-    list.add(100);
-    list.add(50);
-    list.add(25);
+    for (int i = 0; i < 100; i++) {
+      list.add(i); //list.add((int) (Math.random() * 100));
+    }
     list2.add(13);
     list2.add(105);
     list2.add(111);
@@ -25,13 +23,13 @@ public class MultithreadingFactorialTest {
   }
 
   public static void main(String[] args) {
-
-    MyPoolFixedTreads myPoolFixedTreads = new MyPoolFixedTreads(3);
+    MyPool myPoolFixedTreads = new MyPoolFixedTreads(3); // FixedTreads
     myPoolFixedTreads.start();
-
     Thread serviceThread = new Thread(() -> {
       while (!Thread.interrupted()) {
-        myPoolFixedTreads.myThreads.forEach(y -> System.out.println(y.getName() + " " + y.getState()));
+        Set<Thread> myThreads = myPoolFixedTreads.getMyThreads();
+        System.out.println("Количество нитей в данный момент : " + myThreads.size());
+        myPoolFixedTreads.getMyThreads().forEach(y -> System.out.println(y.getName() + " " + y.getState()));
         try {
           Thread.sleep(500);
 
@@ -40,38 +38,66 @@ public class MultithreadingFactorialTest {
         }
       }
     });
-
-    //serviceThread.start();
-
     myPoolFixedTreads.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
+    serviceThread.setDaemon(true);
+    serviceThread.start();
     myPoolFixedTreads.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
     myPoolFixedTreads.stop();
   }
 
   @Test
-  public void scalableThreadPool() {
-    MyPoolFixedTreads myPoolFixedTreads = new MyPoolFixedTreads();
-    myPoolFixedTreads.start();
-    myPoolFixedTreads.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
+  public void myPoolFixedTreads() {
+    MyPool myPool = new MyPoolFixedTreads(2);//  2 Threads
+    myPool.start();
+    myPool.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
+    myPool.join();
+    myPool.stop();
+
   }
 
   @Test
-  public void FixedThreadPool () {
-    MyPoolFixedTreads myPoolFixedTreads = new MyPoolFixedTreads(3);
-    myPoolFixedTreads.start();
-    myPoolFixedTreads.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
-    try {
-      Thread.sleep(3000);
-
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+  public void scalableThreadPool2() {
+    MyPoolScalableTreads myPool = new MyPoolScalableTreads(2, 7); //  from 2 to 7 Threads
+    myPool.start();
+    myPool.setTimeRemoving(1000); // как часто приходит сборщик мусора
+    MyThread.setTimeRemoving(2000); // устанавливаем время после которого бездействующие потоки будут удаляться
+    ArrayDeque<RunF> runFS = new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList()));
+    for (RunF runF : runFS) {
+      myPool.execute(runF);
+      try {
+        Thread.sleep(700);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
     }
-    myPoolFixedTreads.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
-    try {
-      Thread.sleep(3000);
+    myPool.stop();
 
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+  }
+
+  @Test
+  public void scalableThreadPool3() {
+    MyPoolScalableTreads myPool = new MyPoolScalableTreads(2); // min = 2   max = 200
+    myPool.start();
+    ArrayDeque<RunF> runFS = new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList()));
+    for (RunF runF : runFS) {
+      myPool.execute(runF);
+      try {
+        Thread.sleep(200);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
     }
+    myPool.stop();
+
+  }
+
+  @Test
+  public void FirstTryFixedThreadPool() {
+    FirstTryMyPoolFixedTreads firstTryMyPoolFixedTreads = new FirstTryMyPoolFixedTreads(3);
+    firstTryMyPoolFixedTreads.start();
+    firstTryMyPoolFixedTreads.execute(new ArrayDeque<>(list.stream().map(RunF::new).limit(20).collect(Collectors.toList())));
+    firstTryMyPoolFixedTreads.join();
+    firstTryMyPoolFixedTreads.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
+    firstTryMyPoolFixedTreads.stop();
   }
 }
