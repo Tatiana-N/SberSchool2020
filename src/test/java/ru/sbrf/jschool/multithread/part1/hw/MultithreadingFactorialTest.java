@@ -2,14 +2,9 @@ package ru.sbrf.jschool.multithread.part1.hw;
 
 
 import org.junit.Test;
-import ru.sbrf.jschool.multithread.part2.hw.MyPool;
-import ru.sbrf.jschool.multithread.part2.hw.MyThread;
+import ru.sbrf.jschool.multithread.part2.hw.MyPoolFixedTreads;
 
 import java.util.*;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 public class MultithreadingFactorialTest {
@@ -31,12 +26,12 @@ public class MultithreadingFactorialTest {
 
   public static void main(String[] args) {
 
-    MyPool myPool = new MyPool(3);
-    myPool.start();
+    MyPoolFixedTreads myPoolFixedTreads = new MyPoolFixedTreads(3);
+    myPoolFixedTreads.start();
 
     Thread serviceThread = new Thread(() -> {
       while (!Thread.interrupted()) {
-        myPool.myThreads.forEach(y -> System.out.println(y.getName() + " " + y.getState()));
+        myPoolFixedTreads.myThreads.forEach(y -> System.out.println(y.getName() + " " + y.getState()));
         try {
           Thread.sleep(500);
 
@@ -48,29 +43,30 @@ public class MultithreadingFactorialTest {
 
     //serviceThread.start();
 
-    myPool.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
-    myPool.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
+    myPoolFixedTreads.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
+    myPoolFixedTreads.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
+    myPoolFixedTreads.stop();
   }
 
   @Test
   public void scalableThreadPool() {
-    MyPool myPool = new MyPool();
-    myPool.start();
-    myPool.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
+    MyPoolFixedTreads myPoolFixedTreads = new MyPoolFixedTreads();
+    myPoolFixedTreads.start();
+    myPoolFixedTreads.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
   }
 
   @Test
   public void FixedThreadPool () {
-    MyPool myPool = new MyPool(3);
-    myPool.start();
-    myPool.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
+    MyPoolFixedTreads myPoolFixedTreads = new MyPoolFixedTreads(3);
+    myPoolFixedTreads.start();
+    myPoolFixedTreads.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
     try {
       Thread.sleep(3000);
 
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    myPool.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
+    myPoolFixedTreads.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
     try {
       Thread.sleep(3000);
 
