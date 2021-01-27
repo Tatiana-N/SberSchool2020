@@ -17,8 +17,9 @@ public class RunF implements Runnable {
 
 
   public void countFactorial(int a) {
-    CalculatorImpl delegate = new CalculatorImpl();
-    Calculator calculator = (Calculator) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), delegate.getClass().getInterfaces(), new CacheAndMetricProxy(delegate));
+   // CalculatorImpl delegate = new CalculatorImpl();
+    CalculatorImpl calculator = new CalculatorImpl();
+  //  Calculator calculator = (Calculator) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), delegate.getClass().getInterfaces(), new CacheAndMetricProxy(delegate));
 
 //    try {
 //      Thread.sleep(1000);

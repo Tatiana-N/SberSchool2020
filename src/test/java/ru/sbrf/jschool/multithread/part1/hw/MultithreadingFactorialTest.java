@@ -106,4 +106,42 @@ public class MultithreadingFactorialTest {
     firstTryMyPoolFixedTreads.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
     firstTryMyPoolFixedTreads.stop();
   }
+  @Test
+  public void newPoolmin() {
+    MyPool poolFixedTreads = new PoolScalableThreads(3); // 3 и больше нитей
+    poolFixedTreads.start();
+    poolFixedTreads.execute(new ArrayDeque<>(list.stream().map(RunF::new).limit(20).collect(Collectors.toList())));
+    poolFixedTreads.join();
+    poolFixedTreads.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
+    poolFixedTreads.join();
+    poolFixedTreads.stop();
+  }
+  @Test
+  public void newPool() {
+    MyPool poolFixedTreads = new PoolScalableThreads(); // 3 и больше нитей
+    poolFixedTreads.start();
+    poolFixedTreads.execute(new ArrayDeque<>(list.stream().map(RunF::new).limit(20).collect(Collectors.toList())));
+    poolFixedTreads.join();
+    poolFixedTreads.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
+    poolFixedTreads.stop();
+  }
+  @Test
+  public void newPoolMinMax() {
+    MyPool myPool = new PoolScalableThreads(2,7); // от 2 до 7 нитей
+    myPool.start();
+    PoolScalableThreads.setTimeGarbageRemoving(2000); // как часто приходит сборщик мусора
+    PoolScalableThreads.setTimeThreadIsDying(1000); // устанавливаем время после которого бездействующие потоки будут удаляться
+    Queue<Runnable> runFw = new ArrayDeque<>(list.stream().map(RunF::new).limit(20).collect(Collectors.toList()));
+    myPool.execute(runFw);
+    ArrayDeque<RunF> runFS = new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList()));
+    for (RunF runF : runFS) {
+      myPool.execute( new ArrayDeque<>(Collections.singleton(runF)));
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+    myPool.stop();
+  }
 }
