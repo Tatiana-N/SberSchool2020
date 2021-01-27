@@ -42,12 +42,14 @@ public class MultithreadingFactorialTest {
     serviceThread.setDaemon(true);
     serviceThread.start();
     myPoolFixedTreads.execute(new ArrayDeque<>(list2.stream().map(RunF::new).collect(Collectors.toList())));
+    myPoolFixedTreads.join();
     myPoolFixedTreads.stop();
   }
 
   @Test
   public void myPoolFixedTreads() {
-    MyPool myPool = new MyPoolFixedTreads(2);//  2 Threads
+    // FixedTreads 2 Threads
+    MyPool myPool = new MyPoolFixedTreads(2);
     myPool.start();
     myPool.execute(new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList())));
     myPool.join();
@@ -57,15 +59,16 @@ public class MultithreadingFactorialTest {
 
   @Test
   public void scalableThreadPool2() {
-    MyPoolScalableTreads myPool = new MyPoolScalableTreads(2, 7); //  from 2 to 7 Threads
+    // ScalableTreads from 2 to 7 Threads
+    MyPoolScalableTreads myPool = new MyPoolScalableTreads(2, 7);
     myPool.start();
-    myPool.setTimeRemoving(1000); // как часто приходит сборщик мусора
-    MyThread.setTimeRemoving(2000); // устанавливаем время после которого бездействующие потоки будут удаляться
+    myPool.setTimeGarbageRemoving(2000); // как часто приходит сборщик мусора
+    MyThread.setTimeRemoving(1000); // устанавливаем время после которого бездействующие потоки будут удаляться
     ArrayDeque<RunF> runFS = new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList()));
     for (RunF runF : runFS) {
       myPool.execute(runF);
       try {
-        Thread.sleep(700);
+        Thread.sleep(500);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
@@ -76,17 +79,20 @@ public class MultithreadingFactorialTest {
 
   @Test
   public void scalableThreadPool3() {
-    MyPoolScalableTreads myPool = new MyPoolScalableTreads(2); // min = 2   max = 200
+    // ScalableTreads min = 2   max = 200
+    MyPoolScalableTreads myPool = new MyPoolScalableTreads(2);
     myPool.start();
+   // myPool.setTimeGarbageRemoving(100);
     ArrayDeque<RunF> runFS = new ArrayDeque<>(list.stream().map(RunF::new).collect(Collectors.toList()));
     for (RunF runF : runFS) {
       myPool.execute(runF);
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
     }
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    myPool.join();
     myPool.stop();
 
   }

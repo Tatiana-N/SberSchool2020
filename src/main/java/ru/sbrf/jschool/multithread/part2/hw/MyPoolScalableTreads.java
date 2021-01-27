@@ -14,8 +14,8 @@ public class MyPoolScalableTreads implements MyPool {
   private int min;
   private final int max;
   static private int timeRemoving = 1000;
-//конструкторы
 
+//конструкторы
   public MyPoolScalableTreads() {
     this(1, 200);
   }
@@ -34,8 +34,9 @@ public class MyPoolScalableTreads implements MyPool {
     return myThreads;
   }
 
-  public void setTimeRemoving(int timeRemoving) {
-    this.timeRemoving = timeRemoving;
+  // настройка удаления потоков
+  public void setTimeGarbageRemoving(int timeRemoving) {
+    MyPoolScalableTreads.timeRemoving = timeRemoving;
   }
 
   // создание min Threads
@@ -90,12 +91,13 @@ public class MyPoolScalableTreads implements MyPool {
           Set<Thread> myThreads = this.getMyThreads();
           System.out.println(ANSI_PURPLE + "Количество нитей в данный момент : " + myThreads.size());
           List<Thread> collect = myThreads.stream()
-            .filter(t -> ((MyThread) t).canBeTerminate)
-            .limit(myThreads.size() - min)
-            .collect(Collectors.toList());
-          collect.stream().forEach(t -> ((MyThread) t).running = false);
+              .filter(t -> ((MyThread) t).canBeTerminate)
+              .limit(myThreads.size() - min)
+              .collect(Collectors.toList());
+          collect.stream().forEach(t -> t.interrupt());
           myThreads.removeAll(myThreads.stream().filter(t -> t.getState().equals(Thread.State.TERMINATED)).collect(Collectors.toList()));
-          myThreads.stream().forEach(y -> System.out.print(y.getState() + " "));
+          // состояние текущих потоков
+          //  myThreads.stream().forEach(y -> System.out.print(y.getState() + " "));
           System.out.println(ANSI_RESET);
         }
         try {

@@ -6,9 +6,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class MyThread extends Thread {
   static final Queue<Runnable> tasks = new LinkedBlockingQueue<>();
-  boolean running = true;
-  boolean canBeTerminate = false;
-  long lastProcess = 0;
+  private boolean running = true;
+  public boolean canBeTerminate = false;
+  private long lastProcess = 0;
   static private int timeRemoving = 6000;
 
   public MyThread() {
@@ -17,6 +17,10 @@ public class MyThread extends Thread {
 
   public static void setTimeRemoving(int timeRemoving) {
     MyThread.timeRemoving = timeRemoving;
+  }
+
+  public boolean isRunning() {
+    return running;
   }
 
   public void run() {
