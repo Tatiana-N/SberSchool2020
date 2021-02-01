@@ -8,21 +8,19 @@ import java.util.concurrent.Callable;
 public class Task<T> {
   private static final String ANSI_PURPLE = "\u001B[35m";
   private static final String ANSI_RESET = "\u001B[0m";
-  // static Object lock = new Object();
+  static Object lock = new Object();
   private T value;
   Callable<? extends T> callable;
 
   public Task(Callable<? extends T> callable) {
     this.callable = callable;
-
   }
 
-
   public T get() throws Exception {
-    synchronized (Task.class) {
+    synchronized (lock) {
       T temp = this.value;
       if (temp == null) {
-        synchronized (Task.class) {
+        synchronized (lock) {
           if (this.value == null) {
             try {
               this.value = temp = callable.call();
