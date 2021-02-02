@@ -5,14 +5,17 @@ import java.util.concurrent.Callable;
 public class CallTask<T> implements Callable<T> {
   T object;
 
-  public CallTask(T object) {
+  public CallTask() {
+  }
+
+  public void putTask(T object) {
     this.object = object;
   }
 
   @Override
-  public T call() throws Exception {
+  public T call() {
     System.out.println(Thread.currentThread().getName());
-    Thread.sleep(2000);
+    // Thread.sleep(1000);
     return object;
   }
 }
