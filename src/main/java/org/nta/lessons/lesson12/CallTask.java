@@ -13,8 +13,11 @@ public class CallTask<T> implements Callable<T> {
   }
 
   @Override
-  public T call() {
+  public T call() throws FailedMethodCall {
     System.out.println(Thread.currentThread().getName());
+    if(object.hashCode()>0){
+      throw new FailedMethodCall("метод завершен с ошибкой");
+    }
     // Thread.sleep(1000);
     return object;
   }
