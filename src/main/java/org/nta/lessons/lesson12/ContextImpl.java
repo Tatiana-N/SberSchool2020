@@ -1,50 +1,57 @@
 package org.nta.lessons.lesson12;
 
-import org.nta.lessons.lesson10_11.multithread.part1.hw.RunF;
+import ru.sbrf.jschool.multithread.part1.hw.RunF;
+
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
 
 public class ContextImpl implements Context {
-  Queue<Runnable> queue = new LinkedBlockingDeque<>();
+  static List<FutureTask<?>> queue;
 
-  public ContextImpl(Runnable... tasks) {
-    Collections.addAll(this.queue, tasks);
-  }
-  public ContextImpl(Queue<Runnable> queue) {
-    this.queue = queue;
+
+  public ContextImpl() {
+    queue = new ArrayList<>();
   }
 
-  public static void main(String[] args) {
-    ExecutorService service = Executors.newFixedThreadPool(5);
-    Queue<Runnable> list = new LinkedBlockingDeque<>();
-    for (int i = 0; i < 100; i++) {
-      list.add(new RunF(i)); //list.add((int) (Math.random() * 100));
-    }
+  public ContextImpl(List<FutureTask<?>> queue) {
+    ContextImpl.queue = queue;
   }
+
 
   @Override
   public int getCompletedTaskCount() {
-    return 0;
+    int count = (int) queue.stream().filter(t -> queue.stream().filter(t-> t.)
+    return count;
   }
 
   @Override
   public int getFailedTaskCount() {
-    return 0;
+    return (int) queue.stream().filter(t -> t.isCancelled()).count();
   }
 
   @Override
   public int getInterruptedTaskCount() {
-    return 0;
+    return (int) queue.stream().filter(t -> t.isCancelled()).count();
   }
 
   @Override
   public void interrupt() {
-
+    queue.stream().filter(t -> !t.isDone()).map(t -> t.cancel(true));
   }
 
   @Override
   public boolean isFinished() {
+    if (queue.stream().filter(t -> !t.isDone()).count() == 0 || queue.stream().filter(t -> t.isCancelled()).count() == queue.size())
+      return true;
     return false;
   }
+
+  @Override
+  public void add(FutureTask<?> submit) {
+    queue.add(submit);
+  }
+
 }

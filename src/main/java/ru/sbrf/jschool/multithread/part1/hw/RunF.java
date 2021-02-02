@@ -1,6 +1,7 @@
 package ru.sbrf.jschool.multithread.part1.hw;
 
 
+import org.nta.lessons.lesson12.FailedMethodCall;
 import org.nta.lessons.lesson6.calc.CacheAndMetricProxy;
 import org.nta.lessons.lesson6.calc.Calculator;
 import org.nta.lessons.lesson6.calc.CalculatorImpl;
@@ -18,6 +19,7 @@ public class RunF implements Runnable {
 
   public void countFactorial(int a) {
    // CalculatorImpl delegate = new CalculatorImpl();
+    if(a<0){throw new FailedMethodCall();}
     CalculatorImpl calculator = new CalculatorImpl();
   //  Calculator calculator = (Calculator) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), delegate.getClass().getInterfaces(), new CacheAndMetricProxy(delegate));
 
