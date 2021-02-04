@@ -1,20 +1,25 @@
 package org.nta.lessons.lesson12;
 
 import org.junit.Test;
+import org.nta.lessons.lesson12.Task.CallTask;
+import org.nta.lessons.lesson12.Task.Task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 
 public class TaskTest {
   private static final String ANSI_PURPLE = "\u001B[35m";
   private static final String ANSI_RESET = "\u001B[0m";
+  public static final String ANSI_YELLOW = "\u001B[33m";
 
   @Test
   public void test() throws InterruptedException {
-    CallTask<String> integerCallTask = new CallTask<>();
-    Task<String> task = new Task<>(integerCallTask);
-    integerCallTask.putTask("Это наше значение ");
+    CallTask<String> stringCallTask = new CallTask<>();
+    Task<String> task = new Task<>(stringCallTask);
+    stringCallTask.putTask("Это наше значение ");
+    CallTask<Integer> integerCallTask = new CallTask<>();
+    Task<Integer> taskInteger = new Task<>(integerCallTask);
+    integerCallTask.putTask(12);
     // создание первой нити которая зайдет в get
     Thread firstTread = new Thread(() -> {
       System.out.println(task.get() + " " + Thread.currentThread().getName());
@@ -48,6 +53,15 @@ public class TaskTest {
       thread1.start();
       System.out.println(thread1.getName() + " запущена " + ANSI_RESET);
       threads.add(thread1);
+      if(i<2 || i>8){
+        Thread thread2 = new Thread(() -> {
+          System.out.println(ANSI_YELLOW + taskInteger.get() + " " + Thread.currentThread().getName() + ANSI_RESET);
+        });
+        System.out.print(ANSI_YELLOW + thread2.getName() + " created ");
+        thread2.start();
+        System.out.println(thread2.getName() + " запущена " + ANSI_RESET);
+        threads.add(thread2);
+      }
     }
     //дожидаемся пока все потоки закончат свою работу
     while (threads.stream().filter(t -> !t.getState().equals(Thread.State.TERMINATED)).count() > 0) {
@@ -56,7 +70,7 @@ public class TaskTest {
   }
 
   @Test//(expected = FailedMethodCall.class)
-  public void testWithExceptions() throws InterruptedException, FailedMethodCall {
+  public void testWithExceptions() throws InterruptedException {
     // обработка исключений
     Thread.setDefaultUncaughtExceptionHandler(
       (Thread thread, Throwable throwable) -> {
@@ -67,9 +81,12 @@ public class TaskTest {
           }
         }
       });
-    CallTask<String> integerCallTask = new CallTask<>();
-    Task<String> task = new Task<>(integerCallTask);
-    integerCallTask.putTask("Это наше значение для Exception ");
+    CallTask<String> stringCallTask = new CallTask<>();
+    Task<String> task = new Task<>(stringCallTask);
+    stringCallTask.putTask("Это наше значение для Exception ");
+    CallTask<Integer> integerCallTask = new CallTask<>();
+    Task<Integer> taskInteger = new Task<>(integerCallTask);
+    integerCallTask.putTask(12);
     // создание первой нити которая зайдет в get
     Thread firstTread = new Thread(() -> {
       System.out.println(task.get() + " " + Thread.currentThread().getName());
@@ -103,7 +120,18 @@ public class TaskTest {
       thread1.start();
       System.out.println(thread1.getName() + " запущена " + ANSI_RESET);
       threads.add(thread1);
+   if(i<2){
+        Thread thread2 = new Thread(() -> {
+          System.out.println(taskInteger.get() + " " + Thread.currentThread().getName());
+        });
+        System.out.print(ANSI_PURPLE + thread2.getName() + " created ");
+        thread2.start();
+        System.out.println(thread2.getName() + " запущена " + ANSI_RESET);
+        threads.add(thread2);
+      }
     }
+
+
     //дожидаемся пока все потоки закончат свою работу
     while (threads.stream().filter(t -> !t.getState().equals(Thread.State.TERMINATED)).count() > 0) {
       Thread.sleep(1);

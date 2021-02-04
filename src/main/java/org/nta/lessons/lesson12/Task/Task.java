@@ -1,4 +1,6 @@
-package org.nta.lessons.lesson12;
+package org.nta.lessons.lesson12.Task;
+
+import org.nta.lessons.lesson12.FailedMethodCall;
 
 import java.util.concurrent.Callable;
 

@@ -1,9 +1,10 @@
-package org.nta.lessons.lesson12;
+package org.nta.lessons.lesson12.interfaces;
 
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.Future;
+
 
 public interface Context {
-  
+
   int getCompletedTaskCount();
 
   int getFailedTaskCount();
@@ -14,5 +15,5 @@ public interface Context {
 
   boolean isFinished();
 
-  void add(FutureTask<?> submit);
+  void add(Future<?> submit);
 }
