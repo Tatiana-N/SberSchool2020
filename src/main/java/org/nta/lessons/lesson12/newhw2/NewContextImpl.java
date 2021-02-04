@@ -1,16 +1,15 @@
-package org.nta.lessons.lesson12.newhw;
+package org.nta.lessons.lesson12.newhw2;
 
-import org.nta.lessons.lesson12.interfaces.Context;
+import org.nta.lessons.lesson12.hwinterfaces.Context;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
 public class NewContextImpl implements Context {
-  private List<Future<?>> queue;
+  private final List<Future<?>> queue;
   private volatile int completedTaskCount;
   private volatile int failedTaskCount;
-  private volatile int InterruptedTaskCount;
 
   public boolean isInterrupt() {
     return interrupt;
@@ -28,20 +27,14 @@ public class NewContextImpl implements Context {
 
   public void setCompletedTaskCount() {
     synchronized (this) {
-      this.InterruptedTaskCount--;
       this.completedTaskCount++;
     }
   }
 
   public void setFailedTaskCount() {
     synchronized (this) {
-      this.InterruptedTaskCount--;
       this.failedTaskCount++;
     }
-  }
-
-  public void setInterruptedTaskCount(int t) {
-    InterruptedTaskCount = t;
   }
 
   @Override
@@ -56,7 +49,8 @@ public class NewContextImpl implements Context {
 
   @Override
   public int getInterruptedTaskCount() {
-    return InterruptedTaskCount;
+    if(interrupt){ return queue.size() - completedTaskCount - failedTaskCount;}
+    return 0;
   }
 
   @Override
@@ -67,10 +61,7 @@ public class NewContextImpl implements Context {
 
   @Override
   public boolean isFinished() {
-    if (getCompletedTaskCount() == queue.size() || getInterruptedTaskCount() == queue.size()) {
-      return true;
-    }
-    return false;
+    return getCompletedTaskCount() == queue.size() || getInterruptedTaskCount() == queue.size();
   }
 
   @Override

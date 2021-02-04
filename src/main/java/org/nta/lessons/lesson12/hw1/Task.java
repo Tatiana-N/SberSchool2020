@@ -1,4 +1,4 @@
-package org.nta.lessons.lesson12.Task;
+package org.nta.lessons.lesson12.hw1;
 
 import org.nta.lessons.lesson12.FailedMethodCall;
 

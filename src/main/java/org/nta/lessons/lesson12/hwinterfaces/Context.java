@@ -1,4 +1,4 @@
-package org.nta.lessons.lesson12.interfaces;
+package org.nta.lessons.lesson12.hwinterfaces;
 
 import java.util.concurrent.Future;
 

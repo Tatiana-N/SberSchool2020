@@ -1,9 +1,8 @@
-package org.nta.lessons.lesson12.hw;
+package org.nta.lessons.lesson12.hw2;
 
 
-import org.nta.lessons.lesson12.hw.ContextImpl;
-import org.nta.lessons.lesson12.interfaces.Context;
-import org.nta.lessons.lesson12.interfaces.ExecutionManager;
+import org.nta.lessons.lesson12.hwinterfaces.Context;
+import org.nta.lessons.lesson12.hwinterfaces.ExecutionManager;
 
 import java.util.concurrent.*;
 
@@ -29,15 +28,11 @@ try {
     for (Future<?> futureTask : ContextImpl.queue) {
       executorService.execute((FutureTask<?>)futureTask);
     }
-    new Thread(new Runnable() {
-
-      @Override
-      public void run() {
+    new Thread(() -> {
         while (true){
           if(context.getCompletedTaskCount() + context.getFailedTaskCount() + context.getInterruptedTaskCount() == ContextImpl.queue.size()){
             callback.run(); break;
           }
-        }
       }
     }).start();
     return context;

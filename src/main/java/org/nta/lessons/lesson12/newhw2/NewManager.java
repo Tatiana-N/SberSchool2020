@@ -1,9 +1,8 @@
-package org.nta.lessons.lesson12.newhw;
+package org.nta.lessons.lesson12.newhw2;
 
 import org.nta.lessons.lesson12.FailedMethodCall;
-import org.nta.lessons.lesson12.interfaces.Context;
-import org.nta.lessons.lesson12.interfaces.ExecutionManager;
-import org.nta.lessons.lesson12.newhw.NewContextImpl;
+import org.nta.lessons.lesson12.hwinterfaces.Context;
+import org.nta.lessons.lesson12.hwinterfaces.ExecutionManager;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,7 +21,6 @@ public class NewManager implements ExecutionManager {
 
   @Override
   public Context execute(Runnable callback, Runnable... tasks) {
-    ((NewContextImpl) context).setInterruptedTaskCount(tasks.length);
     for (Runnable runnable : tasks) {
       Runnable newRunnable = () -> {
         try {

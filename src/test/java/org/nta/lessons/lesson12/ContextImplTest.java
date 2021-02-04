@@ -2,12 +2,12 @@ package org.nta.lessons.lesson12;
 
 
 import org.junit.Test;
-import org.nta.lessons.lesson12.hw.ContextImpl;
-import org.nta.lessons.lesson12.hw.ExecutionManagerImpl;
-import org.nta.lessons.lesson12.interfaces.Context;
-import org.nta.lessons.lesson12.interfaces.ExecutionManager;
-import org.nta.lessons.lesson12.newhw.NewContextImpl;
-import org.nta.lessons.lesson12.newhw.NewManager;
+import org.nta.lessons.lesson12.hw2.ContextImpl;
+import org.nta.lessons.lesson12.hw2.ExecutionManagerImpl;
+import org.nta.lessons.lesson12.hwinterfaces.Context;
+import org.nta.lessons.lesson12.hwinterfaces.ExecutionManager;
+import org.nta.lessons.lesson12.newhw2.NewContextImpl;
+import org.nta.lessons.lesson12.newhw2.NewManager;
 import ru.sbrf.jschool.multithread.part1.hw.RunF;
 
 
@@ -20,10 +20,7 @@ public class ContextImplTest {
     // если задачи отменены останавливает
     // и те которые не успели закончить выполнение,
     // вылетают Exceptions
-
-    Runnable callBack = () -> {
-        System.out.println("Все выполнено");
-    };
+    Runnable callBack = () -> System.out.println("Все выполнено");
     Runnable[] list = new Runnable[10];
     for (int i = 0; i < 10; i++) {
       list[i] = new RunF(i - 2); //list.add((int) (Math.random() * 100));
@@ -62,12 +59,7 @@ public class ContextImplTest {
 
   @Test
   public void testNewManager() {
-    Runnable callBack = new Runnable() {
-      @Override
-      public void run() {
-        System.out.println("Все выполнено");
-      }
-    };
+    Runnable callBack = () -> System.out.println("Все выполнено");
     Runnable[] list = new Runnable[10];
     for (int i = 0; i < 10; i++) {
       list[i] = new RunF(i - 2); //list.add((int) (Math.random() * 100));

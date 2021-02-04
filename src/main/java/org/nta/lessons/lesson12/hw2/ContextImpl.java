@@ -1,7 +1,7 @@
-package org.nta.lessons.lesson12.hw;
+package org.nta.lessons.lesson12.hw2;
 
 
-import org.nta.lessons.lesson12.interfaces.Context;
+import org.nta.lessons.lesson12.hwinterfaces.Context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,7 @@ public class ContextImpl implements Context {
 
   @Override
   public int getCompletedTaskCount() {
-    int count = (int) queue.stream().filter(t -> t.toString().contains("Completed normally")).count();
-    return count;
+    return (int) queue.stream().filter(t -> t.toString().contains("Completed normally")).count();
   }
 
   @Override
@@ -31,7 +30,7 @@ public class ContextImpl implements Context {
 
   @Override
   public int getInterruptedTaskCount() {
-    return (int) queue.stream().filter(t -> t.isCancelled()).count();
+    return (int) queue.stream().filter(Future::isCancelled).count();
   }
 
   @Override
@@ -43,16 +42,13 @@ public class ContextImpl implements Context {
 //      e.printStackTrace();
 //    }Field finalState = state;
 //    state.setAccessible(true);
-      queue.stream().filter(t -> !t.isDone()).forEach(t -> t.cancel(true));
+    queue.stream().filter(t -> !t.isDone()).forEach(t -> t.cancel(true));
   }
 
 
   @Override
   public boolean isFinished() {
-    if (getCompletedTaskCount() == queue.size() || getInterruptedTaskCount() == queue.size()) {
-      return true;
-    }
-    return false;
+    return getCompletedTaskCount() == queue.size() || getInterruptedTaskCount() == queue.size();
   }
 
   @Override
