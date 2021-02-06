@@ -3,11 +3,9 @@ package org.nta.lessons.lesson5.hwterminal;
 
 public class TerminalImpl implements Terminal {
   private final TerminalServer server;
-  private BankAccount bankAccount;
 
   public TerminalImpl(TerminalServer server) {
     this.server = server;
-    this.bankAccount = server.bankAccount;
   }
 
   @Override
