@@ -8,7 +8,7 @@ import org.nta.lessons.lesson12.hwinterfaces.Context;
 import org.nta.lessons.lesson12.hwinterfaces.ExecutionManager;
 import org.nta.lessons.lesson12.newhw2.NewContextImpl;
 import org.nta.lessons.lesson12.newhw2.NewManager;
-import ru.sbrf.jschool.multithread.part1.hw.RunF;
+import org.nta.lessons.lesson10_11.part1.hw.RunF;
 
 
 public class ContextImplTest {
