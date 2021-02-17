@@ -3,7 +3,7 @@ package org.nta.lessons.lesson15;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.nta.lessons.lesson15.solid.SalaryHtmlReportNotifier;
+import org.nta.lessons.lesson15.solid.*;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -23,9 +23,7 @@ import java.time.LocalDate;
 import java.time.Month;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
@@ -33,52 +31,80 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @PrepareForTest(SalaryHtmlReportNotifier.class)
 public class TestSalaryHtmlReportNotifier {
 
-    @Test
-    public void test() throws Exception {
-        // mock database related stuff
-        Connection someFakeConnection = mock(Connection.class);
-        ResultSet mockResultSet = getMockedResultSet(someFakeConnection);
-        when(mockResultSet.getString("emp_name")).thenReturn("John Doe", "Jane Dow");
-        when(mockResultSet.getDouble("salary")).thenReturn(100.0, 100.0, 50.0, 50.0);
-        // mock mail related stuff
-        MimeMessageHelper mockMimeMessageHelper = getMockedMimeMessageHelper();
+  @Test
+  public void test() throws Exception {
+    // mock database related stuff
+    Connection someFakeConnection = mock(Connection.class);
+    ResultSet mockResultSet = getMockedResultSet(someFakeConnection);
+    when(mockResultSet.getString("emp_name")).thenReturn("John Doe", "Jane Dow");
+    when(mockResultSet.getDouble("salary")).thenReturn(100.0, 100.0, 50.0, 50.0);
+    // mock mail related stuff
+    MimeMessageHelper mockMimeMessageHelper = getMockedMimeMessageHelper();
+    // set up parameters
+    SalaryHtmlReportNotifier notificator = new SalaryHtmlReportNotifier(someFakeConnection);
+    LocalDate dateFrom = LocalDate.of(2014, Month.JANUARY, 1);
+    LocalDate dateTo = LocalDate.of(2014, Month.DECEMBER, 31);
+    // execute
+    notificator.generateAndSendHtmlSalaryReport("10", dateFrom, dateTo, "somebody@gmail.com");
+    // verify results
+    String expectedReportPath = "src/test/resources/expectedReport.html";
+    assertActualReportEqualsTo(mockMimeMessageHelper, expectedReportPath);
+  }
 
-        // set up parameters
-        SalaryHtmlReportNotifier notificator = new SalaryHtmlReportNotifier(someFakeConnection);
-        LocalDate dateFrom = LocalDate.of(2014, Month.JANUARY, 1);
-        LocalDate dateTo = LocalDate.of(2014, Month.DECEMBER, 31);
-        // execute
-        notificator.generateAndSendHtmlSalaryReport("10", dateFrom, dateTo, "somebody@gmail.com");
-        // verify results
-        String expectedReportPath = "src/test/resources/expectedReport.html";
-        assertActualReportEqualsTo(mockMimeMessageHelper, expectedReportPath);
-    }
+  @Test
+  public void testSOLID() throws Exception {
+    // mock database related stuff
+    Connection someFakeConnection = mock(Connection.class);
+    ResultSet mockResultSet = getMockedResultSet(someFakeConnection);
+    when(mockResultSet.getString("emp_name")).thenReturn("John Doe", "Jane Dow");
+    when(mockResultSet.getDouble("salary")).thenReturn(100.0, 100.0, 50.0, 50.0);
+    LocalDate dateFrom = LocalDate.of(2014, Month.JANUARY, 1);
+    LocalDate dateTo = LocalDate.of(2014, Month.DECEMBER, 31);
+    // mock listener related stuff
+    DataListener dataListener = mock(EmailListener.class);
+    CreaterDataForSending createHTML = new CreaterHTMLTable(
+      new SalaryResults(new DBconnecting(someFakeConnection)).getResults("10", dateFrom, dateTo));
+    createHTML.addListener(dataListener);
+    // execute
+    createHTML.createStringForSending();
+    // verify results
+    String expectedReportPath = "src/test/resources/expectedReport.html";
+    myAssertActualReportEqualsTo(dataListener, expectedReportPath);
+  }
 
-    private void assertActualReportEqualsTo(MimeMessageHelper mockMimeMessageHelper, String expectedReportPath) throws MessagingException, IOException {
-        ArgumentCaptor<String> messageTextArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(mockMimeMessageHelper).setText(messageTextArgumentCaptor.capture(), anyBoolean());
-        Path path = Paths.get(expectedReportPath);
-        String expectedReportContent = new String(Files.readAllBytes(path));
-        assertEquals(messageTextArgumentCaptor.getValue(), expectedReportContent);
-    }
+  private void myAssertActualReportEqualsTo(DataListener dataListener, String expectedReportPath) throws IOException {
+    ArgumentCaptor<String> messageTextArgumentCaptor = ArgumentCaptor.forClass(String.class);
+    verify(dataListener).onEvent(messageTextArgumentCaptor.capture());
+    Path path = Paths.get(expectedReportPath);
+    String expectedReportContent = new String(Files.readAllBytes(path));
+    assertEquals(messageTextArgumentCaptor.getValue(), expectedReportContent);
+  }
 
-    private ResultSet getMockedResultSet(Connection someFakeConnection) throws SQLException {
-        PreparedStatement someFakePreparedStatement = mock(PreparedStatement.class);
-        ResultSet mockResultSet = mock(ResultSet.class);
-        when(someFakePreparedStatement.executeQuery()).thenReturn(mockResultSet);
-        when(someFakeConnection.prepareStatement(anyString())).thenReturn(someFakePreparedStatement);
-        when(mockResultSet.next()).thenReturn(true, true, false);
-        return mockResultSet;
-    }
+  private void assertActualReportEqualsTo(MimeMessageHelper mockMimeMessageHelper, String expectedReportPath) throws MessagingException, IOException {
+    ArgumentCaptor<String> messageTextArgumentCaptor = ArgumentCaptor.forClass(String.class);
+    verify(mockMimeMessageHelper).setText(messageTextArgumentCaptor.capture(), anyBoolean());
+    Path path = Paths.get(expectedReportPath);
+    String expectedReportContent = new String(Files.readAllBytes(path));
+    assertEquals(messageTextArgumentCaptor.getValue(), expectedReportContent);
+  }
 
-    private MimeMessageHelper getMockedMimeMessageHelper() throws Exception {
-        JavaMailSenderImpl mockMailSender = mock(JavaMailSenderImpl.class);
-        MimeMessage mockMimeMessage = mock(MimeMessage.class);
-        when(mockMailSender.createMimeMessage()).thenReturn(mockMimeMessage);
-        whenNew(JavaMailSenderImpl.class).withNoArguments().thenReturn(mockMailSender);
-        MimeMessageHelper mockMimeMessageHelper = mock(MimeMessageHelper.class);
-        whenNew(MimeMessageHelper.class).withArguments(any(), any()).thenReturn(mockMimeMessageHelper);
-        return mockMimeMessageHelper;
-    }
+  private ResultSet getMockedResultSet(Connection someFakeConnection) throws SQLException {
+    PreparedStatement someFakePreparedStatement = mock(PreparedStatement.class);
+    ResultSet mockResultSet = mock(ResultSet.class);
+    when(someFakePreparedStatement.executeQuery()).thenReturn(mockResultSet);
+    when(someFakeConnection.prepareStatement(anyString())).thenReturn(someFakePreparedStatement);
+    when(mockResultSet.next()).thenReturn(true, true, false);
+    return mockResultSet;
+  }
+
+  private MimeMessageHelper getMockedMimeMessageHelper() throws Exception {
+    JavaMailSenderImpl mockMailSender = mock(JavaMailSenderImpl.class);
+    MimeMessage mockMimeMessage = mock(MimeMessage.class);
+    when(mockMailSender.createMimeMessage()).thenReturn(mockMimeMessage);
+    whenNew(JavaMailSenderImpl.class).withNoArguments().thenReturn(mockMailSender);
+    MimeMessageHelper mockMimeMessageHelper = mock(MimeMessageHelper.class);
+    whenNew(MimeMessageHelper.class).withArguments(any(), any()).thenReturn(mockMimeMessageHelper);
+    return mockMimeMessageHelper;
+  }
 
 }
