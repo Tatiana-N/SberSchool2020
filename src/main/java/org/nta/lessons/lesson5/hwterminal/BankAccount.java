@@ -1,16 +1,26 @@
 package org.nta.lessons.lesson5.hwterminal;
 
 
+import lombok.Getter;
+import lombok.Setter;
 import org.nta.lessons.lesson5.MyExceptions.AccountIsLockedException;
 import org.nta.lessons.lesson5.MyExceptions.IncorrectAmountOfMoney;
 import org.nta.lessons.lesson5.MyExceptions.NotEnoughMoneyException;
+import org.springframework.stereotype.Component;
 
+@Component
+@Getter
+@Setter
 public class BankAccount {
   private String accountOwner;
   private double balance;
   private int pin;
   private boolean accountIsBlocked = false;
   private int timer;
+
+
+  public BankAccount() {
+  }
 
   public BankAccount(String accountOwner, double balance, int pin) {
     this.accountOwner = accountOwner;
@@ -37,23 +47,6 @@ public class BankAccount {
     } else {
       throw new IncorrectAmountOfMoney("Некорректная сумма");
     }
-  }
-
-
-  public String getAccountOwner() {
-    return accountOwner;
-  }
-
-  public double getBalance() {
-    return balance;
-  }
-
-  public int getPin() {
-    return pin;
-  }
-
-  public void setPin(int pin) {
-    this.pin = pin;
   }
 
   public boolean isAccountIsBlocked() throws AccountIsLockedException {

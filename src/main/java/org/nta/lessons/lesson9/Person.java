@@ -1,8 +1,19 @@
 package org.nta.lessons.lesson9;
 
 public class Person implements Comparable<Person> {
-    int age;
-    String name;
+   private int age;
+   private String name;
+
+    public Person() {
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Person(int age, String name) {
         this.age = age;

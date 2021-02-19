@@ -1,4 +1,4 @@
-package org.nta.lessons.lesson5.hwterminal;
+package org.nta.lessons.lesson5.hwterminal.api;
 
 public interface Terminal {
   double checkAccount();

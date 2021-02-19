@@ -1,41 +1,48 @@
-package org.nta.lessons.lesson5.test;
+package org.nta.lessons.lesson17.spring;
 
 import org.junit.Test;
-import org.nta.lessons.lesson5.hwterminal.BankAccount;
+import org.nta.lessons.lesson17.spring.Config.Config;
+import org.nta.lessons.lesson17.spring.ConfigAvto.ConfigAvto;
 import org.nta.lessons.lesson5.hwterminal.TerminalImpl;
-import org.nta.lessons.lesson5.hwterminal.TerminalServer;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
 
+public class TestTerminalWithSpring {
 
-public class JunitTest {
-  BankAccount bankAccount1 = new BankAccount("Tom", 3000, 1234);
 
   @Test
   public void getAccount() throws InterruptedException {
+    ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+    // ApplicationContext context = new GenericXmlApplicationContext("config.xml");
+    //ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("config.xml");
+    TerminalImpl terminal = context.getBean(TerminalImpl.class);
     String pin = "2\n2\n2\n";
     InputStream is = new ByteArrayInputStream(pin.getBytes());
     System.setIn(is);
-    TerminalImpl terminal = new TerminalImpl(new TerminalServer(bankAccount1));
     terminal.putMoney(200);
     Thread.sleep(5000);
     terminal.withdrawMoney(300);
-    Thread.sleep(5000);
+    Thread.sleep(6000);
     String pin2 = "1\n2\n3\n4\n";
     InputStream is2 = new ByteArrayInputStream(pin2.getBytes());
     System.setIn(is2);
     System.out.println(terminal.checkAccount());
+    assertEquals(terminal.checkAccount(), 3000.0, 0.0);
   }
 
   @Test
   public void putMoney() {
+    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("config.xml");
+    TerminalImpl terminal = context.getBean(TerminalImpl.class);
     String pin = "1\n2\n3\n4\n";
     InputStream is = new ByteArrayInputStream(pin.getBytes());
     System.setIn(is);
-    TerminalImpl terminal = new TerminalImpl(new TerminalServer(bankAccount1));
     assertEquals(terminal.checkAccount(), 3000.0, 0.0);
     terminal.putMoney(200);
     assertEquals(terminal.checkAccount(), 3200.0, 0.0);
@@ -46,10 +53,12 @@ public class JunitTest {
 
   @Test
   public void getMoney() {
+    ApplicationContext context = new AnnotationConfigApplicationContext(ConfigAvto.class);
+    // ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("config.xml");
+    TerminalImpl terminal = context.getBean(TerminalImpl.class);
     String pin = "1\n2\n3\n4\n";
     InputStream is = new ByteArrayInputStream(pin.getBytes());
     System.setIn(is);
-    TerminalImpl terminal = new TerminalImpl(new TerminalServer(bankAccount1));
     assertEquals(terminal.checkAccount(), 3000.0, 0.0);
     System.out.println("Успешное снятие суммы");
     terminal.withdrawMoney(200);

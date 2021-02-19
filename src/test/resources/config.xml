@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="bankAccount" class="org.nta.lessons.lesson5.hwterminal.BankAccount">
+        <property name="accountOwner" value="Tom"/>
+        <property name="balance" value="3000"/>
+        <property name="pin" value="1234"/>
+    </bean>
+
+    <bean id="server" class="org.nta.lessons.lesson5.hwterminal.SimpleTerminalServer">
+        <property name="bankAccount" ref="bankAccount"/>
+    </bean>
+    <bean id="terminal" class="org.nta.lessons.lesson5.hwterminal.TerminalImpl">
+        <property name="server" ref="server"/>
+    </bean>
+    <bean id="val" class="org.nta.lessons.lesson5.hwterminal.SimplePinValidator">
+        <property name="bankAccount" ref="bankAccount"/>
+    </bean>
+</beans>
