@@ -9,7 +9,4 @@
         <property name="age" value="20"/>
         <property name="name" value="Tom"/>
     </bean>
-    <bean id="list" class="org.nta.lessons.lesson9.ListPersons">
-        <constructor-arg ref="person"/>
-    </bean>
 </beans>
