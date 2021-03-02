@@ -22,6 +22,8 @@ public class ContextImplTest {
     // вылетают Exceptions
     Runnable callBack = () -> System.out.println("Все выполнено");
     Runnable[] list = new Runnable[10];
+    Runnable[] list2 = list.clone();
+   // Object
     for (int i = 0; i < 10; i++) {
       list[i] = new RunF(i - 2); //list.add((int) (Math.random() * 100));
     }

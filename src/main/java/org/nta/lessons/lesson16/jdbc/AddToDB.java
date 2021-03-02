@@ -21,11 +21,12 @@ public class AddToDB {
       while (resultSet.next())
       {
         anInt = resultSet.getInt("int");
+       anInt++;
       }}
       catch (SQLException e){
         System.out.println("бд пустая");
       }
-      for (int i = ++anInt; i <list.size() ; i++) {
+      for (int i = anInt; i <list.size() ; i++) {
         PreparedStatement preparedStatement = dbWorker.getConnection().prepareStatement(ADD_VALUE);
         preparedStatement.setInt(1,i);
         preparedStatement.setInt(2, list.get(i));

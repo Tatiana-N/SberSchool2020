@@ -2,22 +2,22 @@ package org.nta.lessons.lesson9;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class StreamsTest {
-  static List<Person> people = new ArrayList<>();
+  static Set<Person> people = new HashSet<>();
 
- static  {
-    people.add(new Person(67, "Sam"));
-    people.add(new Person(1, "Mark"));
-    people.add(new Person(21, "Elis"));
-    people.add(new Person(3, "Kit"));
-    people.add(new Person(43, "Olli"));
-    people.add(new Person(13, "Tom"));
-    people.add(new Person(25, "Alice"));
-    people.add(new Person(31, "Kate"));}
+  static {
+    ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+    while (people.size() < 8) {
+      Person bean = context.getBean(Person.class);
+      people.add(bean);
+    }
+  }
 
 
   @Test
@@ -27,14 +27,15 @@ public class StreamsTest {
     Assert.assertArrayEquals(list.toArray(), people.toArray());
     Assert.assertArrayEquals(listImmutable.toArray(), people.toArray());
   }
-    @Test
-    public void ofTreeSet() {
-        final List<Person> listImmutable = new ArrayList<>(people); // для проверки, что исходный лист не меняется
-        LinkedHashSet<Person> hashSet = new LinkedHashSet<>(people); // LinkedHashSet чтобы сравнивать
-        List<Person> list2 = Streams.of(hashSet).filter(p -> p.getAge() > 20).toList();
-        Assert.assertArrayEquals(list2.toArray(), people.stream().filter(p -> p.getAge() > 20).toArray());
-        Assert.assertArrayEquals(listImmutable.toArray(), people.toArray());
-    }
+
+  @Test
+  public void ofTreeSet() {
+    final List<Person> listImmutable = new ArrayList<>(people); // для проверки, что исходный лист не меняется
+    LinkedHashSet<Person> hashSet = new LinkedHashSet<>(people); // LinkedHashSet чтобы сравнивать
+    List<Person> list2 = Streams.of(hashSet).filter(p -> p.getAge() > 20).toList();
+    Assert.assertArrayEquals(list2.toArray(), people.stream().filter(p -> p.getAge() > 20).toArray());
+    Assert.assertArrayEquals(listImmutable.toArray(), people.toArray());
+  }
 
   @Test
   public void filter() {
@@ -57,10 +58,9 @@ public class StreamsTest {
 
   @Test
   public void toMap() {
-
     final List<Person> listImmutable = new ArrayList<>(people); // для проверки, что исходный лист не меняется
-    Map<String, Person> map = Streams.of(people).toMap(Person::getName, person -> person);
-    Assert.assertArrayEquals(map.entrySet().toArray(), people.stream().collect(Collectors.toMap(Person::getName, p -> p)).entrySet().toArray());
+    Map< Person,String> map = Streams.of(people).toMap(person -> person, Person::getName);
+    Assert.assertArrayEquals(map.entrySet().toArray(), people.stream().collect(Collectors.toMap( p -> p, Person::getName)).entrySet().toArray());
     Assert.assertArrayEquals(listImmutable.toArray(), people.toArray());
   }
 }
