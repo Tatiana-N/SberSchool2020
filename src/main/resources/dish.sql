@@ -1,7 +1,6 @@
 
-set schema public;
-drop table IF EXISTS INGREDIENT;
-drop table IF EXISTS DISHES;
+drop table IF EXISTS INGREDIENTS;
+drop table IF EXISTS DISH;
 drop table IF EXISTS INGREDIENT_AND_DISHES;
 
 create table DISH (
@@ -17,7 +16,7 @@ create table INGREDIENTS (
                         name VARCHAR(100) NOT NULL
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS UNIQUE_INGREDIENT ON INGREDIENT(name);
+CREATE UNIQUE INDEX IF NOT EXISTS UNIQUE_INGREDIENT ON INGREDIENTS(name);
 create table INGREDIENT_AND_DISHES (
                         id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
                         DISH_ID INT,
